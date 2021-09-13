@@ -24,6 +24,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/prometheus-community/json_exporter/config"
@@ -51,6 +52,13 @@ func SanitizeValue(s string) (float64, error) {
 		} else {
 			return 0.0, nil
 		}
+	} else {
+		resultErr = resultErr + "; " + fmt.Sprintf("%s", err)
+	}
+
+	sPointer := &s
+	if hexValue, err := hexutil.DecodeUint64(*sPointer); err == nil {
+		return float64(hexValue), nil
 	} else {
 		resultErr = resultErr + "; " + fmt.Sprintf("%s", err)
 	}
